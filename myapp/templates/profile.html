@@ -7,7 +7,7 @@
 {% if videos %}
 <ul>
   {% for video in videos %}
-  <li>{{ video.video_title }} - {{ video.video_desc }}</li>
+  <li>{{ video.video_title }} - {{ video.video_desc }} - {{video.file_path}}</li>
   {% endfor %}
 </ul>
 {% else %}

@@ -35,6 +35,11 @@ def handle_ice_candidate(ice_candidate):
     emit("ice_candidate", ice_candidate, broadcast=True, include_self=False)
 
 
+def get_file_path(file_name):
+    path = os.path.join(current_app.root_path, "temp", file_name)
+    return path
+
+
 @video.route("/upload", methods=["GET", "POST"])
 @login_required
 def upload():
@@ -55,7 +60,7 @@ def upload():
                         video_title=video_title,
                         video_desc=video_desc,
                         file_name=filename,
-                        video=file_data,
+                        file_path=get_file_path(filename),
                         user_id=current_user.id,
                     )
 

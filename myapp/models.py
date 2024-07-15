@@ -22,13 +22,14 @@ class Video(db.Model):
     video_desc = db.Column(db.String(500), nullable=False)
     file_name = db.Column(db.String(100))
 
-    video = db.Column(db.LargeBinary)
+    file_path = db.Column(db.String(100))
+
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
-    def __init__(self, video, video_title, video_desc, file_name, user_id):
+    def __init__(self, file_path, video_title, video_desc, file_name, user_id):
         self.video_title = video_title
         self.video_desc = video_desc
         self.file_name = file_name
 
-        self.video = video
+        self.file_path = file_path
         self.user_id = user_id
