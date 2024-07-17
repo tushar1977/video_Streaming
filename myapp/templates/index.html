@@ -2,14 +2,38 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title></title>
-    <link href="css/style.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Gallery</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    {% extends "base.html" %} {% block content %}
-    <h1 class="title">Welcome to videos</h1>
+    <div class="container mt-5">
+      <div class="row">
+        {% for vid in video %}
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">{{ vid.video_title }}</h5>
+              <p class="card-text">{{ vid.video_desc }}</p>
+              <a
+                href="{{ url_for('home.watch_video', unique_name=vid.unique_name) }}"
+                class="btn btn-primary"
+                >Watch Video</a
+              >
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
 
-    {% endblock %}
+    <!-- Include Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>

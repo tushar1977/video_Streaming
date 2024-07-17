@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Video Streaming with Controls</title>
+  </head>
+  <body>
+    <h1>Video Streaming with Controls</h1>
+    <video width="800" controls>
+      <source
+        src="{{ url_for('video.stream_video', unique_name=video.unique_name) }}"
+        type="video/mp4"
+      />
+      Your browser does not support the video tag.
+    </video>
+  </body>
+</html>

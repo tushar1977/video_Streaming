@@ -6,9 +6,16 @@ from .models import User, Video
 home = Blueprint("home", __name__)
 
 
+@home.route("/watch/<string:unique_name>", methods=["GET"])
+def watch_video(unique_name):
+    video = Video.query.filter_by(unique_name=unique_name).first_or_404()
+    return render_template("watch.html", video=video)
+
+
 @home.route("/", methods=["GET"])
 def index():
-    return render_template("index.html")
+    video = Video.query.all()
+    return render_template("index.html", video=video)
 
 
 @home.route("/profile", methods=["GET"])
