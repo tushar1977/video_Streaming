@@ -46,6 +46,7 @@ def get_file_path(filename):
 def stream_video(unique_name):
     video = Video.query.filter_by(unique_name=unique_name).first_or_404()
     file_path = secure_filename(video.file_path)
+    print(file_path)
     range_header = request.headers.get("Range", None)
     byte1, byte2 = 0, None
 
@@ -59,6 +60,7 @@ def stream_video(unique_name):
     print(file_path)
     resp = Response(chunk, 206, mimetype="video/mp4", content_type="video/mp4")
     resp.headers.add("Content-Range", f"bytes {start}-{end}/{file_size}")
+    print(resp)
     return resp
 
 

@@ -20,7 +20,7 @@
               <h5 class="card-title">{{ vid.video_title }}</h5>
               <p class="card-text">{{ vid.video_desc }}</p>
               <a
-                href="{{ url_for('home.watch_video', unique_name=vid.unique_name) }}"
+                href="{{ url_for('video.stream_video', unique_name=vid.unique_name) }}"
                 class="btn btn-primary"
                 >Watch Video</a
               >
