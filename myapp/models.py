@@ -1,5 +1,4 @@
 from flask_login import UserMixin
-from sqlalchemy.orm import backref
 from . import db
 
 
@@ -22,18 +21,21 @@ class Video(db.Model):
     video_desc = db.Column(db.String(500), nullable=False)
     file_name = db.Column(db.String(100))
 
+    thumbnail_name = db.Column(db.String(100))
+
     unique_name = db.Column(db.String(10))
-    file_path = db.Column(db.String(100))
+    # file_path = db.Column(db.String(100))
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
     def __init__(
-        self, file_path, video_title, video_desc, file_name, user_id, unique_name
+        self, thumbnail_name, video_title, video_desc, file_name, user_id, unique_name
     ):
         self.video_title = video_title
         self.video_desc = video_desc
         self.file_name = file_name
 
-        self.file_path = file_path
+        self.thumbnail_name = thumbnail_name
+
         self.user_id = user_id
         self.unique_name = unique_name

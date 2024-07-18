@@ -4,24 +4,23 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_socketio import SocketIO
+from .config import Config as conf
+from dotenv import load_dotenv
 
+load_dotenv()
 
-db = SQLAlchemy()
 login_manager = LoginManager()
 sock = SocketIO()
+db = SQLAlchemy()
 
 
 def create_app():
-    app = Flask(__name__, static_url_path="/static")
-    app.config["SECRET_KEY"] = os.getenv("SECRET")
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
-    app.config["UPLOAD_EXTENSIONS"] = [
-        ".mp4",
-        ".avi",
-        ".mov",
-    ]
-    filepath = os.path.join(app.root_path, "temp")
-    app.config["UPLOAD_FOLDER"] = filepath
+    app = Flask(__name__)
+
+    app.config.from_object(conf)
+
+    os.makedirs(app.config["UPLOAD_FOLDER_VIDEO"], exist_ok=True)
+    os.makedirs(app.config["UPLOAD_FOLDER_IMAGE"], exist_ok=True)
 
     db.init_app(app)
     Migrate(app, db)
