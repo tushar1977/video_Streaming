@@ -1,3 +1,12 @@
+*A Simple Video Streaming Plateform*
+
+*Features*
+
+-- Uses request headers to get chunk data from the video file
+-- Upload function so that user can upload the video
+
+*Running it on local machine(Soon live on a server)*
+
 1) clone this repo
 
 2) make a virtual environment
