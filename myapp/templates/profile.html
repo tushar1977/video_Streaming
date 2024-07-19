@@ -1,13 +1,12 @@
 {% extends "base.html" %} {% block content %}
 <h1>welcome {{ name }}</h1>
 
-<h1>Welcome, {{ name }}!</h1>
 
 <h2>Your Videos:</h2>
 {% if videos %}
 <ul>
   {% for video in videos %}
-  <li>{{ video.video_title }} - {{ video.video_desc }} - {{video.file_name}}</li>
+  <li>{{ video.video_title }} - {{ video.video_desc }} </li>
   {% endfor %}
 </ul>
 {% else %}

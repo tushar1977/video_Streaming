@@ -86,7 +86,7 @@ def upload():
                                 current_app.config["UPLOAD_FOLDER_VIDEO"], filename
                             )
                         )
-                        file.save(
+                        thumbnail.save(
                             os.path.join(
                                 current_app.config["UPLOAD_FOLDER_IMAGE"], imgname
                             )
