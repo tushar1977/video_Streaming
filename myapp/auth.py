@@ -18,6 +18,11 @@ def signup():
 def signup_post():
     # code to validate and add user to database goes here
     email = request.form.get("email")
+
+    if not User.is_valid_email(email):
+        flash("Not Valid Email")
+        return redirect(url_for("auth.signup"))
+
     name = request.form.get("name")
     password = request.form.get("password")
     if not email or not password or not name:

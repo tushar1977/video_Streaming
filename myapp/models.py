@@ -1,6 +1,6 @@
 from flask_login import UserMixin
 from . import db
-
+import re
 import bcrypt
 
 
@@ -17,6 +17,10 @@ class User(UserMixin, db.Model):
         self.name = name
 
     @staticmethod
+    def is_valid_email(email):
+        regex = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+        return re.match(regex, email) is not None
+
     def hash_password(password):
         return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
