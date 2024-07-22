@@ -1,3 +1,4 @@
+alembic==1.13.2
 asgiref==3.8.1
 async-timeout==4.0.3
 attrs==23.2.0
@@ -27,6 +28,7 @@ MarkupSafe==2.1.5
 multidict==6.0.5
 mysql-connector-python==9.0.0
 opencv-python==4.10.0.84
+pip==22.0.2
 pycparser==2.22
 pyee==11.1.0
 pylibsrtp==0.10.0
@@ -36,6 +38,7 @@ pyOpenSSL==24.1.0
 python-dotenv==1.0.1
 python-engineio==4.9.1
 python-socketio==5.11.3
+setuptools==59.6.0
 simple-websocket==1.0.0
 SQLAlchemy==2.0.31
 typing_extensions==4.12.2
