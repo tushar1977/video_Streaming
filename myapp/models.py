@@ -18,8 +18,54 @@ class User(UserMixin, db.Model):
 
     @staticmethod
     def is_valid_email(email):
-        regex = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
-        return re.match(regex, email) is not None
+        allowed_domains = [
+            "gmail.com",
+            "googlemail.com",
+            "yahoo.com",
+            "ymail.com",
+            "rocketmail.com",
+            "outlook.com",
+            "hotmail.com",
+            "live.com",
+            "msn.com",
+            "icloud.com",
+            "me.com",
+            "mac.com",
+            "aol.com",
+            "protonmail.com",
+            "protonmail.ch",
+            "zoho.com",
+            "zohomail.com",
+            "mail.com",
+            "email.com",
+            "usa.com",
+            "europe.com",
+            "asia.com",
+            "mweb.co.za",
+            "online.nl",
+            "post.com",
+            "shortmail.com",
+            "coach.com",
+            "consultant.com",
+            "engineer.com",
+            "doctor.com",
+            "gmx.com",
+            "gmx.de",
+            "gmx.net",
+            "yandex.com",
+            "yandex.ru",
+            "tutanota.com",
+            "tutanota.de",
+            "mail.ru",
+            "list.ru",
+            "bk.ru",
+            "inbox.ru",
+        ]
+
+        # Create the regex pattern
+        domain_pattern = "|".join(re.escape(domain) for domain in allowed_domains)
+        regex_pattern = rf"^[a-zA-Z0-9_.+-]+@({domain_pattern})$"
+        return re.match(regex_pattern, email) is not None
 
     def hash_password(password):
         return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
