@@ -4,10 +4,12 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_socketio import SocketIO
+from sqlalchemy import create_engine
 from .config import Config as conf
 from dotenv import load_dotenv
 
 load_dotenv()
+
 
 login_manager = LoginManager()
 sock = SocketIO()

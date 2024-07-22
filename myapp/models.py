@@ -1,6 +1,8 @@
 from flask_login import UserMixin
 from . import db
 
+import bcrypt
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -13,6 +15,13 @@ class User(UserMixin, db.Model):
         self.email = email
         self.password = password
         self.name = name
+
+    @staticmethod
+    def hash_password(password):
+        return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+    def check_password(self, password):
+        return bcrypt.checkpw(password.encode("utf-8"), self.password.encode("utf-8"))
 
 
 class Video(db.Model):

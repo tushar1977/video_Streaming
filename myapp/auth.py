@@ -56,7 +56,7 @@ def login_check():
 
     user = User.query.filter_by(email=email).first()
 
-    if not user or not bcrypt.checkpw(password.encode("utf-8"), user.password):
+    if not user or not user.check_password(password):
         flash("Please check your login details and try again.")
         return redirect(url_for("auth.login"))
     login_user(user, remember=remember)
