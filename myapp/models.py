@@ -1,7 +1,61 @@
 from flask_login import UserMixin
+from sqlalchemy.orm import backref
 from . import db
 import re
 import bcrypt
+from sqlalchemy.dialects.mysql import ENUM
+
+
+class Video(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    video_title = db.Column(db.String(100), nullable=False)
+    video_desc = db.Column(db.String(500), nullable=False)
+    file_name = db.Column(db.String(100))
+    thumbnail_name = db.Column(db.String(100))
+    unique_name = db.Column(db.String(10))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    comments = db.relationship("Comment", backref="video", lazy=True)
+    likes = db.relationship("Like", backref="video", lazy=True)
+
+    def __init__(
+        self, thumbnail_name, video_title, video_desc, file_name, user_id, unique_name
+    ):
+        self.video_title = video_title
+        self.video_desc = video_desc
+        self.file_name = file_name
+        self.thumbnail_name = thumbnail_name
+        self.user_id = user_id
+        self.unique_name = unique_name
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(500), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    video_id = db.Column(db.Integer, db.ForeignKey("video.id"), nullable=False)
+    created_at = db.Column(
+        db.DateTime, nullable=False, default=db.func.current_timestamp()
+    )
+
+    def __init__(self, text, user_id, video_id):
+        self.text = text
+        self.user_id = user_id
+        self.video_id = video_id
+
+
+class Like(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    like_type = db.Column(ENUM("like", "dislike", name="like_type"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    video_id = db.Column(db.Integer, db.ForeignKey("video.id"), nullable=False)
+    created_at = db.Column(
+        db.DateTime, nullable=False, default=db.func.current_timestamp()
+    )
+
+    def __init__(self, like_type, user_id, video_id):
+        self.like_type = like_type
+        self.user_id = user_id
+        self.video_id = video_id
 
 
 class User(UserMixin, db.Model):
@@ -9,7 +63,9 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
     name = db.Column(db.String(1000))
-    videos = db.relationship("Video", backref="user", lazy=True)
+    comments = db.relationship("Comment", backref="user", lazy=True)
+    videos = db.relationship("Video", backref="User", lazy=True)
+    likes = db.relationship("Like", backref="User", lazy=True)
 
     def __init__(self, email, password, name):
         self.email = email
@@ -72,29 +128,3 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return bcrypt.checkpw(password.encode("utf-8"), self.password.encode("utf-8"))
-
-
-class Video(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    video_title = db.Column(db.String(100), nullable=False)
-    video_desc = db.Column(db.String(500), nullable=False)
-    file_name = db.Column(db.String(100))
-
-    thumbnail_name = db.Column(db.String(100))
-
-    unique_name = db.Column(db.String(10))
-    # file_path = db.Column(db.String(100))
-
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-
-    def __init__(
-        self, thumbnail_name, video_title, video_desc, file_name, user_id, unique_name
-    ):
-        self.video_title = video_title
-        self.video_desc = video_desc
-        self.file_name = file_name
-
-        self.thumbnail_name = thumbnail_name
-
-        self.user_id = user_id
-        self.unique_name = unique_name
