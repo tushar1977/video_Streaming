@@ -56,7 +56,6 @@ def login():
 def login_check():
     email = request.form.get("email")
     password = request.form.get("password")
-
     remember = True if request.form.get("remember") else False
 
     user = User.query.filter_by(email=email).first()
@@ -64,6 +63,7 @@ def login_check():
     if not user or not user.check_password(password):
         flash("Please check your login details and try again.")
         return redirect(url_for("auth.login"))
+
     login_user(user, remember=remember)
     return redirect(url_for("home.index"))
 

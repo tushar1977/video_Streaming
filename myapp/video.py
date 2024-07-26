@@ -13,7 +13,7 @@ from flask.helpers import flash
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
-from .models import Video
+from .models import Video, Comment
 import random
 from . import db
 import string
@@ -62,10 +62,17 @@ def resize_video(input_path, output_path, width, height):
 @video.route("/watch/<string:unique_name>", methods=["GET"])
 def watch_video(unique_name):
     video = Video.query.filter_by(unique_name=unique_name).first_or_404()
+    comments = (
+        Comment.query.filter_by(video_id=unique_name)
+        .order_by(Comment.created_at.desc())
+        .all()
+    )
     video_url = f"/watch/{video.unique_name}"
     print(video_url)
     print(video.file_name)
-    return render_template("watch.html", video=video, video_url=video_url)
+    return render_template(
+        "watch.html", video=video, video_url=video_url, comments=comments
+    )
 
 
 @video.route("/stream/<string:unique_name>", methods=["GET"])

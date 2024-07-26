@@ -1,4 +1,5 @@
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
+from sqlalchemy import CheckConstraint
 from sqlalchemy.orm import backref
 from . import db
 import re
@@ -12,7 +13,7 @@ class Video(db.Model):
     video_desc = db.Column(db.String(500), nullable=False)
     file_name = db.Column(db.String(100))
     thumbnail_name = db.Column(db.String(100))
-    unique_name = db.Column(db.String(10))
+    unique_name = db.Column(db.String(10), unique=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     comments = db.relationship("Comment", backref="video", lazy=True)
     likes = db.relationship("Like", backref="video", lazy=True)
@@ -27,12 +28,21 @@ class Video(db.Model):
         self.user_id = user_id
         self.unique_name = unique_name
 
+    def get_user_like(self):
+        if current_user.is_authenticated:
+            return Like.query.filter_by(
+                user_id=current_user.id, video_id=self.unique_name
+            ).first()
+        return None
+
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(500), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    video_id = db.Column(db.Integer, db.ForeignKey("video.id"), nullable=False)
+    video_id = db.Column(
+        db.String(10), db.ForeignKey("video.unique_name"), nullable=False
+    )
     created_at = db.Column(
         db.DateTime, nullable=False, default=db.func.current_timestamp()
     )
@@ -45,17 +55,23 @@ class Comment(db.Model):
 
 class Like(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    like_type = db.Column(ENUM("like", "dislike", name="like_type"), nullable=False)
+    like_type = db.Column(db.String(7), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     video_id = db.Column(db.Integer, db.ForeignKey("video.id"), nullable=False)
     created_at = db.Column(
         db.DateTime, nullable=False, default=db.func.current_timestamp()
+    )
+    __table_args__ = (
+        CheckConstraint(like_type.in_(["like", "dislike"]), name="check_like_type"),
     )
 
     def __init__(self, like_type, user_id, video_id):
         self.like_type = like_type
         self.user_id = user_id
         self.video_id = video_id
+
+    def __repr__(self):
+        return f"<Like {self.id}: {self.like_type} by User {self.user_id} on Video {self.video_id}>"
 
 
 class User(UserMixin, db.Model):
@@ -127,4 +143,4 @@ class User(UserMixin, db.Model):
         return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
     def check_password(self, password):
-        return bcrypt.checkpw(password.encode("utf-8"), self.password.encode("utf-8"))
+        return bcrypt.checkpw(password.encode("utf-8"), self.password)

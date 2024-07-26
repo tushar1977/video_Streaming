@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Video Streaming with Controls</title>
+    <title>Video Streaming with Controls and Comments</title>
     <style>
       .video-container {
         width: 1400px;
@@ -13,6 +13,21 @@
       .video-container video {
         width: 100%;
         height: 100%;
+      }
+      .comment-section {
+        width: 1400px;
+        margin: 20px auto;
+      }
+      .comment-form {
+        margin-bottom: 20px;
+      }
+      .comment-list {
+        list-style-type: none;
+        padding: 0;
+      }
+      .comment-item {
+        border-bottom: 1px solid #ccc;
+        padding: 10px 0;
       }
     </style>
   </head>
@@ -25,6 +40,35 @@
         />
         Your browser does not support the video tag.
       </video>
+    </div>
+
+    <div class="comment-section">
+      <h2>Comments</h2>
+      <form
+        class="comment-form"
+        action="{{ url_for('comm.upload_comment', unique_name=video.unique_name) }}"
+        method="post"
+      >
+        <textarea
+          name="comments"
+          rows="4"
+          cols="50"
+          placeholder="Add a comment..."
+        ></textarea>
+        <br />
+        <input type="submit" value="Post Comment" />
+      </form>
+
+      <ul class="comment-list">
+        {% for c in comments %}
+        <li class="comment-item">
+          <p><strong>{{ c.user.username }}:</strong> {{ c.text }}</p>
+          <small
+            >Posted on: {{ c.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small
+          >
+        </li>
+        {% endfor %}
+      </ul>
     </div>
   </body>
 </html>

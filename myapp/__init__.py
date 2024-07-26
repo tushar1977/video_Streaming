@@ -49,4 +49,12 @@ def create_app():
 
     app.register_blueprint(video)
 
+    from .comments import comm
+
+    app.register_blueprint(comm)
+
+    from .likes import like
+
+    app.register_blueprint(like)
+
     return app
