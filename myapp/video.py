@@ -113,7 +113,6 @@ def upload():
             flash("File name or thumbnail name is empty")
             return redirect(url_for("video.upload"))
 
-        # Validate file extensions
         file_ext = os.path.splitext(filename)[1].lower()
         img_ext = os.path.splitext(imgname)[1].lower()
         if (
@@ -123,24 +122,20 @@ def upload():
             flash("Invalid file extension")
             return redirect(url_for("video.upload"))
 
-        # Define paths for temporary and final video
         temp_path = os.path.join(
             current_app.config["UPLOAD_FOLDER_VIDEO"], f"temp_{filename}"
         )
         final_path = os.path.join(current_app.config["UPLOAD_FOLDER_VIDEO"], filename)
 
         try:
-            # Save uploaded video to a temporary file
             file.save(temp_path)
             original_dimensions = get_video_dimensions(temp_path)
 
-            # Resize the video
             resize_video(temp_path, final_path, 800, 500)
 
             if not verify_resized_video(final_path, original_dimensions):
                 raise Exception("Video resizing verification failed")
 
-            # Remove the temporary file
             os.remove(temp_path)
         except Exception as e:
             flash("Video processing failed")
@@ -150,7 +145,6 @@ def upload():
                 os.remove(final_path)
             return redirect(url_for("video.upload"))
 
-        # Save thumbnail
         try:
             thumbnail.save(
                 os.path.join(current_app.config["UPLOAD_FOLDER_IMAGE"], imgname)
@@ -161,7 +155,6 @@ def upload():
                 os.remove(final_path)
             return redirect(url_for("video.upload"))
 
-        # Create new Video entry
         password = "".join(
             random.choice(string.ascii_letters + string.digits) for i in range(8)
         )
@@ -189,7 +182,6 @@ def upload():
 
 
 def get_video_dimensions(video_path):
-    """Get the dimensions of the video using ffprobe."""
     cmd = [
         "ffprobe",
         "-v",
@@ -208,14 +200,11 @@ def get_video_dimensions(video_path):
 
 
 def verify_resized_video(video_path, original_dimensions):
-    """Verify that the video has been resized correctly."""
     new_dimensions = get_video_dimensions(video_path)
 
-    # Check if dimensions have changed
     if new_dimensions == original_dimensions:
         return False
 
-    # Check if new dimensions match target dimensions (800x500)
     if new_dimensions != (800, 500):
         return False
 

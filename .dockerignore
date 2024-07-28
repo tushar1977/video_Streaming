@@ -1,0 +1,55 @@
+# Version control
+.git
+.gitignore
+
+# Python cache files
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+
+# Virtual environment
+venv
+ENV
+env.bak
+venv.bak
+
+# IDE specific files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Flask stuff
+instance
+.webassets-cache
+
+# Database
+*.db
+*.sqlite
+
+# Miscellaneous
+*.bak
+*.tmp
+*.temp

@@ -62,7 +62,7 @@
       <ul class="comment-list">
         {% for c in comments %}
         <li class="comment-item">
-          <p><strong>{{ c.user.username }}:</strong> {{ c.text }}</p>
+          <p><strong>{{ c.user.name }}:</strong> {{ c.text }}</p>
           <small
             >Posted on: {{ c.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small
           >
