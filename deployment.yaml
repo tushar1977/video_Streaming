@@ -1,0 +1,61 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-app
+  labels:
+    app: flask-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      containers:
+        - name: flask-app
+          image: tushar2005d/video_stream
+          ports:
+            - containerPort: 8000
+          env:
+            - name: FLASK_APP
+              value: "myapp"
+            - name: FLASK_ENV
+              value: "production"
+            - name: FLASK_DEBUG
+              value: "False"
+            - name: PORT
+              value: "8000"
+          volumeMounts:
+            - name: db-initialized
+              mountPath: /app/db_initialized
+              subPath: db_initialized
+      volumes:
+        - name: db-initialized
+          configMap:
+            name: db-initialized
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-app-service
+spec:
+  selector:
+    app: flask-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: LoadBalancer
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-initialized
+data:
+  db_initialized: "initialized"
