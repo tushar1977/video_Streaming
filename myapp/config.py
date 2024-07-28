@@ -14,7 +14,7 @@ class Config:
     SECRET_KEY = os.getenv("SECRET")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = (
-        f"mysql://{username}:{password}@{hostname}:{port}/{database}"
+        f"mysql+pymysql://{username}:{password}@{hostname}:{port}/{database}"
     )
     UPLOAD_FOLDER_IMAGE = os.path.join(os.getcwd(), "myapp", "static", "img")
     SEND_FILE_MAX_AGE_DEFAULT = 0

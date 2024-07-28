@@ -1,16 +1,12 @@
 
 FROM python:3.8-slim-buster
 RUN apt-get update && apt-get install -y \
-    python3-dev \
-    default-libmysqlclient-dev \
-    build-essential \
-    pkg-config \
     libgl1-mesa-glx \
     libglib2.0-0 \
-    libmariadb-dev \
-    && rm -rf /var/lib/apt/lists/* \
-    && export MYSQLCLIENT_CFLAGS=`pkg-config --cflags mysqlclient` \
-    && export MYSQLCLIENT_LDFLAGS=`pkg-config --libs mysqlclient`
+    && rm -rf /var/lib/apt/lists/*
+
+
+
 WORKDIR /app
 
 
