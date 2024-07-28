@@ -1,14 +1,15 @@
 
 FROM python:3.8-slim-buster
-RUN apt-get update && apt-get install -y \
+RUN apt-get update &&  apt-get install python3-dev default-libmysqlclient-dev build-essential \
+ && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
+
 WORKDIR /app
 
 
-ENV SECRET=jdfjndcnjdcn
 ENV PORT=8000
 
 ENV FLASK_ENV=production
