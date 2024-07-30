@@ -9,15 +9,6 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-
-ENV PORT=8000
-
-ENV FLASK_ENV=production
-ENV DB_USERNAME=tushar
-ENV DB_PASSWORD=Tushar2005!
-ENV DB_HOSTNAME=84.247.185.93
-ENV DB_NAME=video_streaming
-
 COPY . .
 
 
