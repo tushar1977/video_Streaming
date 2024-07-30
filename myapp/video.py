@@ -13,7 +13,7 @@ from flask.helpers import flash
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
-from .models import Video, Comment
+from .models import Like, Video, Comment
 import random
 from . import db
 import string
@@ -67,11 +67,17 @@ def watch_video(unique_name):
         .order_by(Comment.created_at.desc())
         .all()
     )
+    likes = Like.query.filter_by(video_id=unique_name).all()
     video_url = f"/watch/{video.unique_name}"
     print(video_url)
     print(video.file_name)
     return render_template(
-        "watch.html", video=video, video_url=video_url, comments=comments
+        "watch.html",
+        current_user=current_user.id,
+        video=video,
+        video_url=video_url,
+        comments=comments,
+        likes=likes,
     )
 
 

@@ -25,6 +25,10 @@ def signup_post():
 
     name = request.form.get("name")
     password = request.form.get("password")
+
+    if len(password) <= 6:
+        flash("Password should be greater than 6 characters")
+
     if not email or not password or not name:
         flash("Email and password are required")
     user = User.query.filter_by(email=email).first()

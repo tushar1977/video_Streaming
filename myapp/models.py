@@ -8,12 +8,13 @@ from sqlalchemy.dialects.mysql import ENUM
 
 
 class Video(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
     video_title = db.Column(db.String(100), nullable=False)
     video_desc = db.Column(db.String(500), nullable=False)
     file_name = db.Column(db.String(100))
     thumbnail_name = db.Column(db.String(100))
-    unique_name = db.Column(db.String(10), unique=True, nullable=False)
+    unique_name = db.Column(
+        db.String(10), unique=True, nullable=False, primary_key=True
+    )
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     comments = db.relationship("Comment", backref="video", lazy=True)
     likes = db.relationship("Like", backref="video", lazy=True)
@@ -57,9 +58,11 @@ class Like(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     like_type = db.Column(db.String(7), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    video_id = db.Column(db.Integer, db.ForeignKey("video.id"), nullable=False)
     created_at = db.Column(
         db.DateTime, nullable=False, default=db.func.current_timestamp()
+    )
+    video_id = db.Column(
+        db.String(10), db.ForeignKey("video.unique_name"), nullable=False
     )
     __table_args__ = (
         CheckConstraint(like_type.in_(["like", "dislike"]), name="check_like_type"),
