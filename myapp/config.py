@@ -19,6 +19,12 @@ class Config:
     UPLOAD_FOLDER_IMAGE = os.path.join(os.getcwd(), "myapp", "static", "img")
     SEND_FILE_MAX_AGE_DEFAULT = 0
 
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_size": 10,
+        "max_overflow": 20,
+        "pool_timeout": 30,
+        "pool_recycle": 1800,
+    }
     UPLOAD_FOLDER_VIDEO = os.path.join(os.getcwd(), "myapp", "static", "video")
     UPLOAD_EXTENSIONS = [
         ".mp4",

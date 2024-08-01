@@ -1,4 +1,3 @@
-# deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -29,6 +28,12 @@ spec:
               value: "False"
             - name: PORT
               value: "8000"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: flask-app-secrets
+                  key: DB_PASSWORD
+
           volumeMounts:
             - name: db-initialized
               mountPath: /app/db_initialized
@@ -37,7 +42,6 @@ spec:
         - name: db-initialized
           configMap:
             name: db-initialized
-
 ---
 apiVersion: v1
 kind: Service
@@ -51,7 +55,6 @@ spec:
       port: 7000
       targetPort: 8000
   type: LoadBalancer
-
 ---
 apiVersion: v1
 kind: ConfigMap
