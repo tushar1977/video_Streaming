@@ -26,7 +26,6 @@ def upload_comment(unique_name):
                 "An error occurred while posting your comment. Please try again.",
                 "error",
             )
-            # You might want to log the exception here
     else:
         flash("Comment cannot be empty.", "warning")
 

@@ -19,14 +19,11 @@ from . import db
 import string
 import re
 import subprocess
-import tempfile
-import logging
 
 video = Blueprint("video", __name__)
 
 
 def get_chunk(file_path, byte1=None, byte2=None):
-
     file_size = os.stat(file_path).st_size
     start = 0 if byte1 is None else byte1
     end = file_size - 1 if byte2 is None else byte2

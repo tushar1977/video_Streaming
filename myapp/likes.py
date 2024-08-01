@@ -17,10 +17,8 @@ def like_action(like_action, unique_name):
 
     if like_action == "like":
         if existing_like:
-            # If like already exists, remove it (toggle off)
             db.session.delete(existing_like)
         else:
-            # If no like exists, add a new one
             new_like = Like(
                 user_id=current_user.id, video_id=unique_name, like_type="like"
             )

@@ -1,33 +1,27 @@
+from datetime import datetime
 from flask_login import UserMixin, current_user
 from sqlalchemy import CheckConstraint
-from sqlalchemy.orm import backref
+from sqlalchemy.orm import Mapped
 from . import db
 import re
 import bcrypt
-from sqlalchemy.dialects.mysql import ENUM
+from dataclasses import dataclass
 
 
+@dataclass
 class Video(db.Model):
-    video_title = db.Column(db.String(100), nullable=False)
-    video_desc = db.Column(db.String(500), nullable=False)
-    file_name = db.Column(db.String(100))
-    thumbnail_name = db.Column(db.String(100))
-    unique_name = db.Column(
+    video_title: Mapped[str] = db.Column(db.String(100), nullable=False)
+    video_desc: Mapped[str] = db.Column(db.String(500), nullable=False)
+    file_name: Mapped[str] = db.Column(db.String(100))
+    thumbnail_name: Mapped[str] = db.Column(db.String(100))
+    unique_name: Mapped[str] = db.Column(
         db.String(10), unique=True, nullable=False, primary_key=True
     )
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user_id: Mapped[int] = db.Column(
+        db.Integer, db.ForeignKey("user.id"), nullable=False
+    )
     comments = db.relationship("Comment", backref="video", lazy=True)
     likes = db.relationship("Like", backref="video", lazy=True)
-
-    def __init__(
-        self, thumbnail_name, video_title, video_desc, file_name, user_id, unique_name
-    ):
-        self.video_title = video_title
-        self.video_desc = video_desc
-        self.file_name = file_name
-        self.thumbnail_name = thumbnail_name
-        self.user_id = user_id
-        self.unique_name = unique_name
 
     def get_user_like(self):
         if current_user.is_authenticated:
@@ -37,59 +31,48 @@ class Video(db.Model):
         return None
 
 
+@dataclass
 class Comment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(500), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    video_id = db.Column(
+    id: Mapped[int] = db.Column(db.Integer, primary_key=True)
+    text: Mapped[str] = db.Column(db.String(500), nullable=False)
+    user_id: Mapped[int] = db.Column(
+        db.Integer, db.ForeignKey("user.id"), nullable=False
+    )
+    video_id: Mapped[str] = db.Column(
         db.String(10), db.ForeignKey("video.unique_name"), nullable=False
     )
-    created_at = db.Column(
+    created_at: Mapped[datetime] = db.Column(
         db.DateTime, nullable=False, default=db.func.current_timestamp()
     )
 
-    def __init__(self, text, user_id, video_id):
-        self.text = text
-        self.user_id = user_id
-        self.video_id = video_id
 
-
+@dataclass
 class Like(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    like_type = db.Column(db.String(7), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    id: Mapped[int] = db.Column(db.Integer, primary_key=True)
+    like_type: Mapped[str] = db.Column(db.String(7), nullable=False)
+    user_id: Mapped[int] = db.Column(
+        db.Integer, db.ForeignKey("user.id"), nullable=False
+    )
     created_at = db.Column(
         db.DateTime, nullable=False, default=db.func.current_timestamp()
     )
-    video_id = db.Column(
+    video_id: Mapped[str] = db.Column(
         db.String(10), db.ForeignKey("video.unique_name"), nullable=False
     )
     __table_args__ = (
         CheckConstraint(like_type.in_(["like", "dislike"]), name="check_like_type"),
     )
 
-    def __init__(self, like_type, user_id, video_id):
-        self.like_type = like_type
-        self.user_id = user_id
-        self.video_id = video_id
 
-    def __repr__(self):
-        return f"<Like {self.id}: {self.like_type} by User {self.user_id} on Video {self.video_id}>"
-
-
+@dataclass
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String(100), nullable=False)
-    name = db.Column(db.String(1000))
+    email: Mapped[str] = db.Column(db.String(100), unique=True, nullable=False)
+    password: Mapped[str] = db.Column(db.String(100), nullable=False)
+    name: Mapped[str] = db.Column(db.String(1000))
     comments = db.relationship("Comment", backref="user", lazy=True)
     videos = db.relationship("Video", backref="User", lazy=True)
     likes = db.relationship("Like", backref="User", lazy=True)
-
-    def __init__(self, email, password, name):
-        self.email = email
-        self.password = password
-        self.name = name
 
     @staticmethod
     def is_valid_email(email):
