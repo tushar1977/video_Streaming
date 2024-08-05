@@ -3,6 +3,6 @@ set -o errexit
 set -o pipefail
 export FLASK_APP=myapp
 export FLASK_ENV=production
-export FLASK_DEBUG=False
+export FLASK_DEBUG=True
 echo "Starting the application..."
-exec gunicorn --bind 0.0.0.0:${PORT:-8000} --workers 4 --threads 4 "run:app"
+python3 run.py

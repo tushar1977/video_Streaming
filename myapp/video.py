@@ -173,7 +173,7 @@ def upload():
             db.session.add(new_video)
             db.session.commit()
             flash("Upload successful")
-            return redirect(url_for("home.profile", video_id=new_video.id))
+            return redirect(url_for("home.profile", video_id=new_video.unique_name))
         except Exception as e:
             flash("Error saving video details to database")
             print(f"Database error: {e}")
