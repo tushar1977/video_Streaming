@@ -33,7 +33,7 @@ MarkupSafe==2.1.5
 multidict==6.0.5
 mysql-connector-python==9.0.0
 mysqlclient==2.2.4
-numpy==2.0.0
+numpy
 opencv-python==4.10.0.84
 pip==22.0.2
 pycodestyle==2.12.0
