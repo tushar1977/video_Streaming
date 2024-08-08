@@ -5,4 +5,4 @@ export FLASK_APP=myapp
 export FLASK_ENV=production
 export FLASK_DEBUG=True
 echo "Starting the application..."
-python3 run.py
+exec gunicorn --bind 0.0.0.0:${PORT:-8000} "run:app"

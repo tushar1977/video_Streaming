@@ -2,7 +2,6 @@ import cv2
 from flask import (
     Blueprint,
     Response,
-    jsonify,
     render_template,
     request,
     redirect,
@@ -93,6 +92,7 @@ def stream_video(unique_name):
             byte1, byte2 = int(groups[0]), (int(groups[1]) if groups[1] else None)
 
     chunk, start, end, file_size = get_chunk(file_path, byte1, byte2)
+
     resp = Response(chunk, 206, mimetype="video/mp4", content_type="video/mp4")
     resp.headers.add("Content-Range", f"bytes {start}-{end}/{file_size}")
     return resp
@@ -132,12 +132,8 @@ def upload():
 
         try:
             file.save(temp_path)
-            original_dimensions = get_video_dimensions(temp_path)
 
             resize_video(temp_path, final_path, 800, 500)
-
-            if not verify_resized_video(final_path, original_dimensions):
-                raise Exception("Video resizing verification failed")
 
             os.remove(temp_path)
         except Exception as e:
@@ -182,33 +178,3 @@ def upload():
             return "Internal server error", 500
 
     return render_template("upload.html")
-
-
-def get_video_dimensions(video_path):
-    cmd = [
-        "ffprobe",
-        "-v",
-        "error",
-        "-select_streams",
-        "v:0",
-        "-count_packets",
-        "-show_entries",
-        "stream=width,height",
-        "-of",
-        "csv=p=0",
-        video_path,
-    ]
-    output = subprocess.check_output(cmd).decode("utf-8").strip().split(",")
-    return int(output[0]), int(output[1])
-
-
-def verify_resized_video(video_path, original_dimensions):
-    new_dimensions = get_video_dimensions(video_path)
-
-    if new_dimensions == original_dimensions:
-        return False
-
-    if new_dimensions != (800, 500):
-        return False
-
-    return True
