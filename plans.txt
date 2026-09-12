@@ -1,0 +1,14 @@
+1) introduce network fs read/write
+2) have a temp storage so that ffmpeg writes/read through it and after process is finished, push it to network storage (object storage or anything) TBR
+3) netflix uses object storage or Apache Cassandra
+
+```
+Upload → user uploads video → backend1 (API) saves the raw original wherever inbound uploads land
+Job queued → backend1 publishes a transcode job to RabbitMQ (video location + job params)
+Worker picks it up → a backend2 (ffmpeg) worker pulls the job off the queue
+Local scratch → worker downloads/reads the source, runs ffmpeg entirely against local disk on that VM — all temp files, HLS segment muxing, everything happens here at full local disk speed, no network in the hot path
+Push to permanent storage → once the job's done, worker uploads the finished HLS segments + manifest (.m3u8) to your durable store — NFS on NetApp or object storage (Swift/MinIO)
+Cleanup → worker deletes its local scratch copy to free disk for the next job
+MongoDB updated → worker (or backend1) writes a record marking the video "ready" with the path/URL to the permanent files
+Playback → frontend requests the manifest/segments, served from permanent storage — ideally through Traefik with caching, or a CDN in front, not hitting origin storage on every single viewer request
+```
